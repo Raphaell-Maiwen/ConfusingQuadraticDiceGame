@@ -6,11 +6,21 @@
 	</head>
 	<body>
 		<div id = "sheet">
-			<p>Press on space to roll the dice. </p>
+			<p>This game is based on the quadratic equation (ax^2 + bx + c).
+			<br>Each game, a 20-faced die is thrown to determine the value of x. It's the same for all players.
+			<br>A 6-faced die is thrown, setting the number of quadratic equations every players will have to do.
+			<br>To do a quadratic equations, a player throw three 12-sized dice. To each one correspond a variable (a, b and c).
+			<br>After the system computes the results, all the digits for the results are converted into a letter. 
+			<br>0 = a, 1 = b, 2 = c, 3 = d, 4 = e, 5 = f, 6 = g, 7 = h, 8 = i, 9 = j.
+			<br>The rate of vowel is then computed. The player with the highest rate wins.
+			<br>I had fun making this game; I don't expect you to do so.
+			<br>Press on space to roll the dice. 
+			</p>
 		</div>
 		<canvas>
 		</canvas>
 		<script>
+			//Make the players throw the x and rollsToDo dice?
 			var a;
 			var b;
 			var c;
@@ -23,8 +33,7 @@
 			var lettersResult = "";
 
 			var allRates = [];
-			var playersNum = 2; //Might be customized
-			var winner = -1;
+			var playersNum = 3; //Might be customized
 
 			window.addEventListener("keydown", getKey, false);
 
@@ -40,8 +49,8 @@
 					var rate = vowelRate(lettersResult);
 					console.log("Rate: " + rate);
 
-					sheet.innerHTML += "<p>";
-					sheet.innerHTML += "Rate: " + rate;
+					//sheet.innerHTML += "<p>";
+					sheet.innerHTML += "<br>" + "Rate: " + rate;
 					sheet.innerHTML += "</p>";
 					lettersResult = "";
 
@@ -54,7 +63,7 @@
 							sheet.innerHTML += "Winner: Player " + winner;
 						}
 						else{
-							sheet.innerHTML += "No winner.";
+							sheet.innerHTML += "It's a tie.";
 						}
 						sheet.innerHTML += "</p>";
 						allRates.splice(0, allRates.length);
@@ -69,13 +78,18 @@
 			}
 
 			function compute(){
+				sheet.innerHTML += "<p>";
 				a = Math.floor((Math.random() * 12)+1);
 				console.log("a: " + a);
 				b = Math.floor((Math.random() * 12)+1);
 				console.log("b: " + b);
 				c = Math.floor((Math.random() * 12)+1);
 				console.log("c: " + c);
+				//TODO WHY :(
+				//sheet.innerHTML += a + "(" + x + ")^2 + " + b + "(" + x + ") + " + c " = ";
+
 				quadResult = a * Math.pow(x, 2) + b * x + c;
+				sheet.innerHTML += quadResult;
 				console.log("quadResult: " + quadResult);
 
 				lettersResult += quadResult;
@@ -142,6 +156,9 @@
 					if(allRates[i] > highestRate){
 						highestRate = allRates[i];
 						winner = i+1;
+					}
+					else if(allRates[i] == highestRate){
+						winner = -1;
 					}
 				}
 				return winner;
