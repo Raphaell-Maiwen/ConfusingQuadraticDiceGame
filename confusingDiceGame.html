@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Quadratic dice game</title>
+		<meta charset = "UTF-8"></meta>
+	</head>
+	<body>
+		<div id = "sheet">
+			<p>Press on space to roll the dice. </p>
+		</div>
+		<canvas>
+		</canvas>
+		<script>
+			var a;
+			var b;
+			var c;
+			var x = Math.floor((Math.random() * 20)+1);
+			console.log("x: " + x);
 
+			var rollsToDo = Math.floor((Math.random() * 6)+1);
+			console.log("rollsToDo: " + rollsToDo);
+			var quadResult;
+			var lettersResult = "";
+
+			var allRates = [];
+			var playersNum = 2; //Might be customized
+			var winner = -1;
+
+			window.addEventListener("keydown", getKey, false);
+
+			function getKey(e){
+				if (e.keyCode == 32){
+					for(var i = 0; i < rollsToDo; i++){
+						compute();
+					}
+					console.log("lettersResult before: " + lettersResult);
+					lettersResult = converse(lettersResult);
+					console.log("lettersResult after: " + lettersResult);
+
+					var rate = vowelRate(lettersResult);
+					console.log("Rate: " + rate);
+
+					sheet.innerHTML += "<p>";
+					sheet.innerHTML += "Rate: " + rate;
+					sheet.innerHTML += "</p>";
+					lettersResult = "";
+
+					allRates.push(rate);
+					if(allRates.length == playersNum){
+						//TODO: Manage case where it's a tie.
+						winner = end(allRates);
+						sheet.innerHTML += "<p>";
+						if(winner != -1){
+							sheet.innerHTML += "Winner: Player " + winner;
+						}
+						else{
+							sheet.innerHTML += "No winner.";
+						}
+						sheet.innerHTML += "</p>";
+						allRates.splice(0, allRates.length);
+
+						x = Math.floor((Math.random() * 20)+1);
+						console.log("x: " + x);
+
+						rollsToDo = Math.floor((Math.random() * 6)+1);
+						console.log("rollsToDo: " + rollsToDo);
+					}
+				}
+			}
+
+			function compute(){
+				a = Math.floor((Math.random() * 12)+1);
+				console.log("a: " + a);
+				b = Math.floor((Math.random() * 12)+1);
+				console.log("b: " + b);
+				c = Math.floor((Math.random() * 12)+1);
+				console.log("c: " + c);
+				quadResult = a * Math.pow(x, 2) + b * x + c;
+				console.log("quadResult: " + quadResult);
+
+				lettersResult += quadResult;
+			}
+
+			function converse(lettersResult){
+				var letlet = "";
+				for(var i = 0; i < lettersResult.length; i++){
+					if(lettersResult[i] == 0){
+						letlet += 'a';
+					}
+					else if(lettersResult[i] == 1){
+						letlet += 'b';
+					}
+					else if(lettersResult[i] == 2){
+						letlet += 'c';
+					}
+					else if(lettersResult[i] == 3){
+						letlet += 'd';
+					}
+					else if(lettersResult[i] == 4){
+						letlet += 'e';
+					}
+					else if(lettersResult[i] == 5){
+						letlet += 'f';
+					}
+					else if(lettersResult[i] == 6){
+						letlet += 'g';
+					}
+					else if(lettersResult[i] == 7){
+						letlet += 'h';
+					}
+					else if(lettersResult[i] == 8){
+						letlet += 'i';
+					}
+					else{
+						letlet += 'j';
+					}
+				}
+				return letlet;
+			}
+
+			function vowelRate(lettersResult){
+				var vowel = 0;
+
+				for(var i = 0; i < lettersResult.length; i++){
+					if(lettersResult[i] == 'a' || lettersResult[i] == 'e' || lettersResult[i] == 'i'){
+						vowel++;
+					}
+				}
+				console.log("Vowels: " + vowel);
+				if(vowel == 0){
+					return 0;
+				}
+				else{
+					return lettersResult.length / vowel;
+				}
+			}
+
+			function end(allRates){
+				var winner = -1;
+				var highestRate = 0;
+				for(var i = 0; i < allRates.length; i++){
+					if(allRates[i] > highestRate){
+						highestRate = allRates[i];
+						winner = i+1;
+					}
+				}
+				return winner;
+			}
+		</script>
+	</body>
+</html>
