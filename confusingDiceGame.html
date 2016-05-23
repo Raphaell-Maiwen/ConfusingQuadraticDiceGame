@@ -24,7 +24,7 @@
 			var a;
 			var b;
 			var c;
-			var x = Math.floor((Math.random() * 20)+1);
+			x = Math.floor((Math.random() * 20)+1);
 			console.log("x: " + x);
 
 			var rollsToDo = Math.floor((Math.random() * 6)+1);
@@ -35,11 +35,28 @@
 			var allRates = [];
 			var playersNum = 3; //Might be customized
 
+			var newTurn = false;
+
 			window.addEventListener("keydown", getKey, false);
 
 			function getKey(e){
 				if (e.keyCode == 32){
+					if (newTurn) {
+					    sheet.innerHTML = "";
+					    newTurn = false;
+					    
+					    setTimeout(function(){
+					    	getKey({keyCode:32});
+					    },300);
+
+					    return;
+					}
+
+					sheet.innerHTML += "Player " + (allRates.length + 1);
+
 					for(var i = 0; i < rollsToDo; i++){
+						sheet.innerHTML += "<br>" + "<br>";
+						sheet.innerHTML += "Roll " + (i+1) + ": ";
 						compute();
 					}
 					console.log("lettersResult before: " + lettersResult);
@@ -49,23 +66,38 @@
 					var rate = vowelRate(lettersResult);
 					console.log("Rate: " + rate);
 
-					//sheet.innerHTML += "<p>";
-					sheet.innerHTML += "<br>" + "Rate: " + rate;
-					sheet.innerHTML += "</p>";
+					sheet.innerHTML += "<p style='color:gold; text-shadow: 0px 0px 3px black,0px 0px 3px black,0px 0px 3px black;'>"
+					                 + "Vowel rate: " + rate
+					                 + "</p>";
 					lettersResult = "";
 
 					allRates.push(rate);
 					if(allRates.length == playersNum){
-						//TODO: Manage case where it's a tie.
+
 						winner = end(allRates);
-						sheet.innerHTML += "<p>";
+						var htmlId = Math.random();
+						var html = "<p id = '" + htmlId +  "' style = 'transition: color 2s, text-shadow 2s; color: #0027FF; text-shadow: 0px 0px 3px #0027FF'>";
+
+						setTimeout(function(){
+							document.getElementById(htmlId).style.textShadow = '0px 0px 3px #E01EE9';
+							setTimeout(function(){
+								document.getElementById(htmlId).style.color = '#E01EE9';
+								setTimeout(function(){
+									document.getElementById(htmlId).style.textShadow = '0px 0px 3px #0027FF';
+								}, 500);
+							}, 500);
+						}, 500);
+
+						//#E01EE9 pink
+						//#0027FF blue
 						if(winner != -1){
-							sheet.innerHTML += "Winner: Player " + winner;
+							html += "Winner: Player " + winner;
 						}
 						else{
-							sheet.innerHTML += "It's a tie.";
+							html += "It's a tie.";
 						}
-						sheet.innerHTML += "</p>";
+						html += "</p>";
+						sheet.innerHTML += html;
 						allRates.splice(0, allRates.length);
 
 						x = Math.floor((Math.random() * 20)+1);
@@ -73,21 +105,23 @@
 
 						rollsToDo = Math.floor((Math.random() * 6)+1);
 						console.log("rollsToDo: " + rollsToDo);
+
+						newTurn = true;
 					}
 				}
 			}
 
 			function compute(){
-				sheet.innerHTML += "<p>";
 				a = Math.floor((Math.random() * 12)+1);
 				console.log("a: " + a);
 				b = Math.floor((Math.random() * 12)+1);
 				console.log("b: " + b);
 				c = Math.floor((Math.random() * 12)+1);
 				console.log("c: " + c);
-				//TODO WHY :(
-				//sheet.innerHTML += a + "(" + x + ")^2 + " + b + "(" + x + ") + " + c " = ";
-
+				
+				sheet.innerHTML += "<br>";
+				sheet.innerHTML += "a = " + a + ", b = " + b + ", c = " + c;
+				sheet.innerHTML += "<br>" + a + "(" + x + ")^2 + " + b + "(" + x + ") + " + c + " = ";
 				quadResult = a * Math.pow(x, 2) + b * x + c;
 				sheet.innerHTML += quadResult;
 				console.log("quadResult: " + quadResult);
