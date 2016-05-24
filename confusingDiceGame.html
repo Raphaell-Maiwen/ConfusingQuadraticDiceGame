@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style = 'background-color: white'>
 	<head>
 		<title>Quadratic dice game</title>
 		<meta charset = "UTF-8"></meta>
@@ -38,13 +38,14 @@
 			window.addEventListener("keydown", getKey, false);
 
 			function getKey(e){
-				if (e.keyCode == 32){
+				if (e.keyCode == 13){
 					if (newTurn) {
 						changeTurn = false;
 					    sheet.innerHTML = "";
 					    instructions();
 					    newTurn = false;
 					    sheet.innerHTML += "<p>" + "x = " + x + "<br>" + rollsToDo + " roll(s) to do" +"</p>";
+					    window.scrollTo(0, 0);
 					}
 					else{
 						if(throwsNumber == 0){
@@ -79,7 +80,6 @@
 							                 + "</div>";
 								lettersResult = "";
 							}
-							window.scrollTo(0, document.body.scrollHeight);
 
 							allRates.push(rate);
 						}
@@ -109,7 +109,7 @@
 										changeTurn = true;
 										setTimeout(function(){
 											if(changeTurn){
-												sheet.innerHTML += "(Press space to play again)";
+												sheet.innerHTML += "(Press enter to play again)";
 											}
 										}, 500);
 									}, 500);
@@ -125,8 +125,6 @@
 							html += "</p>";
 							sheet.innerHTML += html;
 
-							window.scrollTo(0, document.body.scrollHeight);
-
 							allRates.splice(0, allRates.length);
 
 							x = Math.floor((Math.random() * 20)+1);
@@ -137,9 +135,8 @@
 
 							newTurn = true;
 						}
+						window.scrollTo(0, document.body.scrollHeight);
 					}
-
-					
 				}
 			}
 
@@ -239,7 +236,7 @@
 			"<br>" + "0 = a, 1 = b, 2 = c, 3 = d, 4 = e, 5 = f, 6 = g, 7 = h, 8 = i, 9 = j." +
 			"<br>" + "The rate of vowel is then computed. The player with the highest rate wins." +
 			"<br>" + "I had fun making this game; I don't expect you to do so." +
-			"<br>" + "Press on space to roll the dice. " +
+			"<br>" + "Press on enter to roll the dice. " +
 			"</p>";
 			}
 		</script>
