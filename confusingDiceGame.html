@@ -6,21 +6,12 @@
 	</head>
 	<body>
 		<div id = "sheet">
-			<p>This game is based on the quadratic equation (ax^2 + bx + c).
-			<br>Each game, a 20-faced die is thrown to determine the value of x. It's the same for all players.
-			<br>A 6-faced die is thrown, setting the number of quadratic equations every players will have to do.
-			<br>To do a quadratic equations, a player throw three 12-sized dice. To each one correspond a variable (a, b and c).
-			<br>After the system computes the results, all the digits for the results are converted into a letter. 
-			<br>0 = a, 1 = b, 2 = c, 3 = d, 4 = e, 5 = f, 6 = g, 7 = h, 8 = i, 9 = j.
-			<br>The rate of vowel is then computed. The player with the highest rate wins.
-			<br>I had fun making this game; I don't expect you to do so.
-			<br>Press on space to roll the dice. 
-			</p>
 		</div>
 		<canvas>
 		</canvas>
 		<script>
-			//Make the players throw the x and rollsToDo dice?
+			
+			instructions();
 			var a;
 			var b;
 			var c;
@@ -31,83 +22,124 @@
 			console.log("rollsToDo: " + rollsToDo);
 			var quadResult;
 			var lettersResult = "";
-
 			var allRates = [];
-			var playersNum = 3; //Might be customized
+			var throwsNumber = 0;
+			var colors = ["#FF69B4", "#009688", "#D2D0D0", "#663399", "#F5711E", "#5DB961", "#D6180A", "#CDDC39"];
+
+			var playersNum = Math.floor(prompt("How many players will play? (From 2 to 8)"));
+			while(playersNum < 2 || playersNum > 8 || isNaN(playersNum)){
+				playersNum = Math.floor(prompt("How many players will play? (From 2 to 8)"));
+			}
 
 			var newTurn = false;
+			var changeTurn = false;
 
+			sheet.innerHTML += "<p>" + "x = " + x + "<br>" + rollsToDo + " roll(s) to do" +"</p>";
 			window.addEventListener("keydown", getKey, false);
 
 			function getKey(e){
 				if (e.keyCode == 32){
 					if (newTurn) {
+						changeTurn = false;
 					    sheet.innerHTML = "";
+					    instructions();
 					    newTurn = false;
-					    
-					    setTimeout(function(){
-					    	getKey({keyCode:32});
-					    },300);
-
-					    return;
+					    sheet.innerHTML += "<p>" + "x = " + x + "<br>" + rollsToDo + " roll(s) to do" +"</p>";
 					}
+					else{
+						if(throwsNumber == 0){
+							sheet.innerHTML += "<br>" + "<div style = 'color:  " + colors[allRates.length] +  "'>" + "Player " + (allRates.length + 1) + "</div>";
+						}
 
-					sheet.innerHTML += "Player " + (allRates.length + 1);
-
-					for(var i = 0; i < rollsToDo; i++){
-						sheet.innerHTML += "<br>" + "<br>";
-						sheet.innerHTML += "Roll " + (i+1) + ": ";
+						sheet.innerHTML += "<br>";
+						sheet.innerHTML += "Roll " + (throwsNumber+1) + ": ";
 						compute();
-					}
-					console.log("lettersResult before: " + lettersResult);
-					lettersResult = converse(lettersResult);
-					console.log("lettersResult after: " + lettersResult);
+						throwsNumber++;
 
-					var rate = vowelRate(lettersResult);
-					console.log("Rate: " + rate);
+						if(throwsNumber == rollsToDo){
+							throwsNumber = 0;
+							console.log("lettersResult before: " + lettersResult);
+							sheet.innerHTML += "<br>" + "Compiled results: " + lettersResult;
 
-					sheet.innerHTML += "<p style='color:gold; text-shadow: 0px 0px 3px black,0px 0px 3px black,0px 0px 3px black;'>"
-					                 + "Vowel rate: " + rate
-					                 + "</p>";
-					lettersResult = "";
+							lettersResult = converse(lettersResult);
+							console.log("lettersResult after: " + lettersResult);
+							sheet.innerHTML += "<br>" + "Letters conversion: " + lettersResult;
 
-					allRates.push(rate);
-					if(allRates.length == playersNum){
+							var rate = vowelRate(lettersResult);
+							console.log("Rate: " + rate);
+							if(rate != Infinity){
+								sheet.innerHTML += "<div style='color:gold; text-shadow: 0px 0px 3px black,0px 0px 3px black,0px 0px 3px black;'>"
+							                 + "Vowel rate: 1 every " + rate + " letters."
+							                 + "</div>";
+								lettersResult = "";
+							}
+							else{
+								sheet.innerHTML += "<div style='color:gold; text-shadow: 0px 0px 3px black,0px 0px 3px black,0px 0px 3px black;'>"
+							                 + "Vowel rate: No vowel."
+							                 + "</div>";
+								lettersResult = "";
+							}
+							window.scrollTo(0, document.body.scrollHeight);
 
-						winner = end(allRates);
-						var htmlId = Math.random();
-						var html = "<p id = '" + htmlId +  "' style = 'transition: color 2s, text-shadow 2s; color: #0027FF; text-shadow: 0px 0px 3px #0027FF'>";
+							allRates.push(rate);
+						}
+						
+						if(allRates.length == playersNum){
+							winner = end(allRates);
 
-						setTimeout(function(){
-							document.getElementById(htmlId).style.textShadow = '0px 0px 3px #E01EE9';
+							sheet.innerHTML += "<br>";
+							for(var i = 0; i < allRates.length; i++){
+								if(allRates[i] != Infinity){
+									sheet.innerHTML += "Player " + (i+1) + ": 1 out of " + allRates[i] + "<br>";
+								}
+								else{
+									sheet.innerHTML += "Player " + (i+1) + ": No vowel." + "<br>";
+								}
+							}
+
+							var htmlId = Math.random();
+							var html = "<p id = '" + htmlId +  "' style = 'transition: color 2s, text-shadow 2s; color: #0027FF; text-shadow: 0px 0px 3px #0027FF'>";
+
 							setTimeout(function(){
-								document.getElementById(htmlId).style.color = '#E01EE9';
+								document.getElementById(htmlId).style.textShadow = '0px 0px 3px #E01EE9';
 								setTimeout(function(){
-									document.getElementById(htmlId).style.textShadow = '0px 0px 3px #0027FF';
+									document.getElementById(htmlId).style.color = '#E01EE9';
+									setTimeout(function(){
+										document.getElementById(htmlId).style.textShadow = '0px 0px 3px #0027FF';
+										changeTurn = true;
+										setTimeout(function(){
+											if(changeTurn){
+												sheet.innerHTML += "(Press space to play again)";
+											}
+										}, 500);
+									}, 500);
 								}, 500);
 							}, 500);
-						}, 500);
 
-						//#E01EE9 pink
-						//#0027FF blue
-						if(winner != -1){
-							html += "Winner: Player " + winner;
+							if(winner != -1){
+								html += "Winner: Player " + winner;
+							}
+							else{
+								html += "It's a tie.";
+							}
+							html += "</p>";
+							sheet.innerHTML += html;
+
+							window.scrollTo(0, document.body.scrollHeight);
+
+							allRates.splice(0, allRates.length);
+
+							x = Math.floor((Math.random() * 20)+1);
+							console.log("x: " + x);
+
+							rollsToDo = Math.floor((Math.random() * 6)+1);
+							console.log("rollsToDo: " + rollsToDo);
+
+							newTurn = true;
 						}
-						else{
-							html += "It's a tie.";
-						}
-						html += "</p>";
-						sheet.innerHTML += html;
-						allRates.splice(0, allRates.length);
-
-						x = Math.floor((Math.random() * 20)+1);
-						console.log("x: " + x);
-
-						rollsToDo = Math.floor((Math.random() * 6)+1);
-						console.log("rollsToDo: " + rollsToDo);
-
-						newTurn = true;
 					}
+
+					
 				}
 			}
 
@@ -123,7 +155,7 @@
 				sheet.innerHTML += "a = " + a + ", b = " + b + ", c = " + c;
 				sheet.innerHTML += "<br>" + a + "(" + x + ")^2 + " + b + "(" + x + ") + " + c + " = ";
 				quadResult = a * Math.pow(x, 2) + b * x + c;
-				sheet.innerHTML += quadResult;
+				sheet.innerHTML += quadResult + "<br>";
 				console.log("quadResult: " + quadResult);
 
 				lettersResult += quadResult;
@@ -176,7 +208,7 @@
 				}
 				console.log("Vowels: " + vowel);
 				if(vowel == 0){
-					return 0;
+					return Infinity;
 				}
 				else{
 					return lettersResult.length / vowel;
@@ -185,9 +217,9 @@
 
 			function end(allRates){
 				var winner = -1;
-				var highestRate = 0;
+				var highestRate = Infinity;
 				for(var i = 0; i < allRates.length; i++){
-					if(allRates[i] > highestRate){
+					if(allRates[i] < highestRate){
 						highestRate = allRates[i];
 						winner = i+1;
 					}
@@ -196,6 +228,19 @@
 					}
 				}
 				return winner;
+			}
+
+			function instructions(){
+				sheet.innerHTML += "<p>" + "This game is based on the quadratic equation (ax^2 + bx + c)." +
+			"<br>" + "Each game, a 20-faced die is thrown to determine the value of x. It's the same for all players." +
+			"<br>" + "A 6-faced die is thrown, setting the number of quadratic equations every players will have to do." +
+			"<br>" + "To do a quadratic equations, a player throw three 12-sized dice. To each one correspond a variable (a, b and c)." +
+			"<br>" + "After the system computes the results, all the digits for the results are converted into a letter. " +
+			"<br>" + "0 = a, 1 = b, 2 = c, 3 = d, 4 = e, 5 = f, 6 = g, 7 = h, 8 = i, 9 = j." +
+			"<br>" + "The rate of vowel is then computed. The player with the highest rate wins." +
+			"<br>" + "I had fun making this game; I don't expect you to do so." +
+			"<br>" + "Press on space to roll the dice. " +
+			"</p>";
 			}
 		</script>
 	</body>
