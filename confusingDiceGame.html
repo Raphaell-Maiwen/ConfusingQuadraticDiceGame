@@ -7,11 +7,37 @@
 	<body>
 		<div id = "sheet">
 		</div>
-		<canvas>
-		</canvas>
+
 		<script>
-			
 			instructions();
+
+			function instructions(){
+				sheet.innerHTML += "<p>" + "This game is based on the quadratic equation (ax^2 + bx + c)." +
+			"<br>" + "Each game, a 20-faced die is thrown to determine the value of x. It's the same for all players." +
+			"<br>" + "A 6-faced die is thrown, setting the number of quadratic equations every players will have to do." +
+			"<br>" + "To do a quadratic equations, a player throw three 12-sized dice. To each one correspond a variable (a, b and c)." +
+			"<br>" + "After the system computes the results, all the digits for the results are converted into a letter. " +
+			"<br>" + "0 = a, 1 = b, 2 = c, 3 = d, 4 = e, 5 = f, 6 = g, 7 = h, 8 = i, 9 = j." +
+			"<br>" + "The rate of vowel is then computed. The player with the highest rate wins." +
+			"<br>" + "I had fun making this game; I don't expect you to do so." +
+			"</p>";
+			}
+		</script>
+
+		<div id = "numberChoice">
+			<p>How many players will play?</p>
+			<button>2</button>
+			<button>3</button>
+			<button>4</button>
+			<button>5</button>
+			<button>6</button>
+			<button>7</button>
+			<button>8</button>
+		</div>
+
+		<script>
+			document.querySelector("#numberChoice").addEventListener("click", selectPlayers, false);
+
 			var a;
 			var b;
 			var c;
@@ -26,16 +52,10 @@
 			var throwsNumber = 0;
 			var colors = ["#FF69B4", "#009688", "#D2D0D0", "#663399", "#F5711E", "#5DB961", "#D6180A", "#CDDC39"];
 
-			var playersNum = Math.floor(prompt("How many players will play? (From 2 to 8)"));
-			while(playersNum < 2 || playersNum > 8 || isNaN(playersNum)){
-				playersNum = Math.floor(prompt("How many players will play? (From 2 to 8)"));
-			}
+			var playersNum;
 
 			var newTurn = false;
 			var changeTurn = false;
-
-			sheet.innerHTML += "<p>" + "x = " + x + "<br>" + rollsToDo + " roll(s) to do" +"</p>";
-			window.addEventListener("keydown", getKey, false);
 
 			function getKey(e){
 				if (e.keyCode == 13){
@@ -110,6 +130,7 @@
 										setTimeout(function(){
 											if(changeTurn){
 												sheet.innerHTML += "(Press enter to play again)";
+												window.scrollTo(0, document.body.scrollHeight);
 											}
 										}, 500);
 									}, 500);
@@ -138,6 +159,18 @@
 						window.scrollTo(0, document.body.scrollHeight);
 					}
 				}
+			}
+
+			function selectPlayers(e){
+				if(e.target !== e.currentTarget){
+					playersNum = parseInt(e.target.innerText);
+				}
+				e.stopPropagation();
+				numberChoice.style.display = "none";
+				sheet.innerHTML = "<p>" + "x = " + x + "<br>" + rollsToDo + " roll(s) to do" +"</p>";
+				sheet.innerHTML += "Press enter to roll the dice!";
+
+				window.addEventListener("keydown", getKey, false);
 			}
 
 			function compute(){
@@ -227,18 +260,7 @@
 				return winner;
 			}
 
-			function instructions(){
-				sheet.innerHTML += "<p>" + "This game is based on the quadratic equation (ax^2 + bx + c)." +
-			"<br>" + "Each game, a 20-faced die is thrown to determine the value of x. It's the same for all players." +
-			"<br>" + "A 6-faced die is thrown, setting the number of quadratic equations every players will have to do." +
-			"<br>" + "To do a quadratic equations, a player throw three 12-sized dice. To each one correspond a variable (a, b and c)." +
-			"<br>" + "After the system computes the results, all the digits for the results are converted into a letter. " +
-			"<br>" + "0 = a, 1 = b, 2 = c, 3 = d, 4 = e, 5 = f, 6 = g, 7 = h, 8 = i, 9 = j." +
-			"<br>" + "The rate of vowel is then computed. The player with the highest rate wins." +
-			"<br>" + "I had fun making this game; I don't expect you to do so." +
-			"<br>" + "Press on enter to roll the dice. " +
-			"</p>";
-			}
+			
 		</script>
 	</body>
 </html>
