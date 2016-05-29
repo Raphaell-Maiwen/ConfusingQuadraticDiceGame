@@ -35,8 +35,13 @@
 			<button>8</button>
 		</div>
 
+		<form>
+			<input id = "answer" type = "text" style = "display: none">
+		</form>
+
 		<script>
 			document.querySelector("#numberChoice").addEventListener("click", selectPlayers, false);
+			//var answerBox = document.querySelector("#answer");
 
 			var a;
 			var b;
@@ -56,6 +61,7 @@
 
 			var newTurn = false;
 			var changeTurn = false;
+			var diy = true;		//Set to false!
 
 			function getKey(e){
 				if (e.keyCode == 13){
@@ -74,7 +80,15 @@
 
 						sheet.innerHTML += "<br>";
 						sheet.innerHTML += "Roll " + (throwsNumber+1) + ": ";
-						compute();
+						compute();	//Remove display stuff
+						if(diy){
+							answer.style.display = "block";
+							window.removeEventListener("keydown", getKey, false);
+							answer.addEventListener("keydown", getAnswer , false);
+						}
+
+						//Insert display stuff
+
 						throwsNumber++;
 
 						if(throwsNumber == rollsToDo){
@@ -258,6 +272,10 @@
 					}
 				}
 				return winner;
+			}
+
+			function getAnswer(e){
+				return;
 			}
 
 			
