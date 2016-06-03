@@ -35,6 +35,12 @@
 			<button>8</button>
 		</div>
 
+		<div id = "diyChoice" style = "display: none">
+			<p>Who will take care of the computation?</p>
+			<button>The computer</button>
+			<button>The players</button>
+		</div>
+
 		<form>
 			<input id = "answer" type = "text" style = "display: none">
 		</form>
@@ -61,7 +67,7 @@
 
 			var newTurn = false;
 			var changeTurn = false;
-			var diy = true;		//Set to false!
+			var diy = false;
 
 			function getKey(e){
 				if (e.keyCode == 13){
@@ -181,9 +187,21 @@
 				}
 				e.stopPropagation();
 				numberChoice.style.display = "none";
-				sheet.innerHTML = "<p>" + "x = " + x + "<br>" + rollsToDo + " roll(s) to do" +"</p>";
-				sheet.innerHTML += "Press enter to roll the dice!";
+				diyChoice.style.display = "block";
+				document.querySelector("#numberChoice").removeEventListener("click", selectPlayers, false);
+				document.querySelector("#diyChoice").addEventListener("click", selectDIY, false);
+			}
 
+			function selectDIY(e){
+				if(e.target !== e.currentTarget){
+					if(e.target.innerText === "The players"){
+						diy = true;
+					}
+				}
+				e.stopPropagation();
+				diyChoice.style.display = "none";
+				sheet.innerHTML += "<p>" + "x = " + x + "<br>" + rollsToDo + " roll(s) to do" +"</p>";
+				sheet.innerHTML += "Press enter to roll the dice!";
 				window.addEventListener("keydown", getKey, false);
 			}
 
